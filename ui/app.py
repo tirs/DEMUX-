@@ -21,10 +21,14 @@ st.markdown("Upload an audio file to separate it into multiple tracks")
 
 def get_api_config() -> Optional[Dict]:
     try:
-        response = requests.get(f"{API_URL}/config", timeout=5)
+        response = requests.get(f"{API_URL}/config", timeout=10)
         return response.json() if response.status_code == 200 else None
-    except requests.exceptions.RequestException:
-        return None
+    except requests.exceptions.Timeout:
+        return {"error": "API timeout (too slow to respond)"}
+    except requests.exceptions.ConnectionError as e:
+        return {"error": f"Connection error: {str(e)}"}
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Request failed: {str(e)}"}
 
 
 def upload_and_process(uploaded_file) -> Optional[str]:
@@ -95,15 +99,23 @@ def download_all_tracks(job_id: str) -> bool:
 
 with st.sidebar:
     st.header("Configuration")
+    
+    # Debug info
+    with st.expander("🔧 Debug Info"):
+        st.code(f"API_URL: {API_URL}", language="text")
+    
     api_config = get_api_config()
 
-    if api_config:
-        st.success("API Connected")
+    if api_config and "error" not in api_config:
+        st.success("✅ API Connected")
         st.write(f"Max file size: {api_config.get('max_file_size_mb', 'N/A')} MB")
         st.write(f"Supported formats: {', '.join(api_config.get('supported_formats', []))}")
     else:
-        st.error("API Connection Failed")
-        st.info(f"Make sure API is running at {API_URL}")
+        st.error("❌ API Connection Failed")
+        if api_config and "error" in api_config:
+            st.error(api_config["error"])
+        st.info(f"API endpoint: `{API_URL}/config`")
+        st.warning("Troubleshooting:\n- Verify API is running at the configured URL\n- Check if domain is accessible\n- Ensure firewall allows the connection")
 
 tab1, tab2 = st.tabs(["Upload & Process", "View Results"])
 
