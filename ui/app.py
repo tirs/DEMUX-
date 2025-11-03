@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 # Read API URL from secrets or use default for local development
-API_URL = st.secrets.get("API_URL", "http://localhost:8000")
+API_URL = st.secrets.get("API_URL", "http://syncronhub.duckdns.org:8000")
 DOWNLOAD_DIR = Path("./downloads")
 DOWNLOAD_DIR.mkdir(exist_ok=True)
 
