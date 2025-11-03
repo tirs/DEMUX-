@@ -41,3 +41,8 @@ env/
 # Temporary files
 *.tmp
 .DS_Store
+
+# Large files
+*.tar
+*.tar.gz
+audio-api.tar
