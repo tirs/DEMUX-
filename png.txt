@@ -1,0 +1,129 @@
+──────────────────────────────────────────────────────────────
+                 AUDIO PROCESSING PIPELINE FLOW
+──────────────────────────────────────────────────────────────
+
+                ┌────────────────────────────┐
+                │      Main Audio File       │
+                └──────────────┬─────────────┘
+                               │
+                               ▼
+        ┌──────────────────────────────────────────────┐
+        │           Stage 1: Separation               │
+        │    (Demucs - 4 Track Source Separation)     │
+        └──────────────┬───────────────────────────────┘
+                       │
+        ┌──────────────┴──────────────┐
+        │                             │
+        ▼                             ▼
+┌─────────────────────┐      ┌──────────────────────┐
+│ Track Outputs       │      │ Stage 2: Per-Track   │
+│ ─ vocals.wav        │      │  H/P Separation      │
+│ ─ drums.wav         │  ──► │  (4 tracks × 2)      │
+│ ─ bass.wav          │      │  = 8 files           │
+│ ─ other.wav         │      └──────────────────────┘
+└─────────────────────┘             │
+        │                           ▼
+        │          ┌────────────────────────────────┐
+        │          │ Per-Track Outputs              │
+        │          │ ─ vocals_harmonic.wav          │
+        │          │ ─ vocals_percussive.wav        │
+        │          │ ─ drums_harmonic.wav           │
+        │          │ ─ drums_percussive.wav         │
+        │          │ ─ bass_harmonic.wav            │
+        │          │ ─ bass_percussive.wav          │
+        │          │ ─ other_harmonic.wav    ★      │
+        │          │ ─ other_percussive.wav   ★     │
+        │          └────────────────────────────────┘
+        │
+        └─────────┐
+                  ▼
+    ┌──────────────────────────────┐
+    │ Stage 3: Main H/P Analysis   │
+    │ (on original file)           │
+    └──────────────┬───────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────┐
+    │ Main Harmonic/Percussive     │
+    │ ─ harmonic.wav               │
+    │ ─ percussive.wav             │
+    └──────────────┬───────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────┐
+    │ Stage 4: Composite Track     │
+    │ (source recreation)          │
+    └──────────────┬───────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────┐
+    │ Composite Outputs            │
+    │ ─ main.wav                   │
+    │ ─ main_harmonic.wav          │
+    │ ─ main_percussive.wav        │
+    └──────────────┬───────────────┘
+                   │
+                   ▼
+    ┌──────────────────────────────┐
+    │ Stage 5: Normalization       │
+    │ (loudness standardization)   │
+    └──────────────┬───────────────┘
+                   │
+                   ▼
+                ┌────────────────────────────────────┐
+                │      FINAL OUTPUT FILES             │
+                │────────────────────────────────────│
+                │ SEPARATED TRACKS:                  │
+                │  ✓ vocals.wav                      │
+                │  ✓ drums.wav                       │
+                │  ✓ bass.wav                        │
+                │  ✓ other.wav                       │
+                │                                    │
+                │ PER-TRACK H/P COMPONENTS:          │
+                │  ✓ vocals_harmonic.wav             │
+                │  ✓ vocals_percussive.wav           │
+                │  ✓ drums_harmonic.wav              │
+                │  ✓ drums_percussive.wav            │
+                │  ✓ bass_harmonic.wav               │
+                │  ✓ bass_percussive.wav             │
+                │  ✓ other_harmonic.wav    ★         │
+                │  ✓ other_percussive.wav   ★        │
+                │                                    │
+                │ MAIN TRACK COMPONENTS:             │
+                │  ✓ main.wav                        │
+                │  ✓ main_harmonic.wav               │
+                │  ✓ main_percussive.wav             │
+                │  ✓ harmonic.wav                    │
+                │  ✓ percussive.wav                  │
+                │                                    │
+                │ ★ = Items from original diagram    │
+                └────────────────────────────────────┘
+
+──────────────────────────────────────────────────────────────
+UPDATED PROCESS SUMMARY:
+
+ORIGINAL (Planned):
+FFmpeg → Spleeter → Demux → Librosa → Final Outputs
+
+ACTUAL (Now Enhanced to Match):
+Input File
+  ↓
+Stage 1: Demucs Separation (4 tracks)
+  ↓
+Stage 2: Per-Track Harmonic/Percussive ★ NEW
+  ↓
+Stage 3: Main Harmonic/Percussive Analysis
+  ↓
+Stage 4: Composite Track Creation
+  ↓
+Stage 5: Normalization
+  ↓
+Complete Output Set with all diagram components
+
+──────────────────────────────────────────────────────────────
+IMPROVEMENTS:
+✓ Added per-track harmonic/percussive analysis (Stage 2)
+✓ Now outputs all items shown in original diagram
+✓ other_harmonic.wav and other_percussive.wav now included
+✓ Full harmonic/percussive breakdown for all separated tracks
+──────────────────────────────────────────────────────────────

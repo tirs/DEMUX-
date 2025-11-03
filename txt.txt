@@ -1,0 +1,53 @@
+AUDIO PROCESSING PIPELINE FLOW
+
+1. INPUT STAGE
+   - Main Audio File
+
+2. PRE-PROCESSING (FFmpeg)
+   - FFmpeg decodes or converts the input audio into a standard format.
+   - Output is passed to both Spleeter and Librosa processing paths.
+
+3. SOURCE SEPARATION (Spleeter)
+   - Input: Main Audio File (via FFmpeg)
+   - Output Files:
+       • vocals.wav
+       • drums.wav
+       • bass.wav
+       • piano.wav
+       • other.wav
+   - Purpose: Split the full mix into instrument/vocal stems.
+
+4. DEMUX PROCESSING
+   - Input: Spleeter’s “other.wav”
+   - Output Files:
+       • vocals.wav
+       • drums.wav
+       • bass.wav
+       • other.wav
+   - Purpose: Reorganize separated components for further analysis.
+
+5. FEATURE EXTRACTION (Librosa)
+   - Input: Main Audio File and Demux outputs
+   - Process:
+       a. Decompose each input file into harmonic and percussive components.
+   - Output Files:
+       • Main Harmonic
+       • Main Percussive
+       • other_harmonic.wav
+       • other_percussive.wav
+   - Purpose: Extract detailed musical and rhythmic features.
+
+6. FINAL OUTPUT STAGE
+   - Combined Outputs:
+       • Main Audio File
+       • Main Harmonic
+       • Main Percussive
+       • other_harmonic.wav
+       • other_percussive.wav
+       • vocals.wav
+       • drums.wav
+       • bass.wav
+       • piano.wav
+
+PROCESS SUMMARY:
+   FFmpeg → Spleeter → Demux → Librosa → Final Audio Components
